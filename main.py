@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#to use timer uncomment arrow import and timers marks
+#to use timer uncomment arrow import and timer marks
 
 from twython import Twython
 import json
@@ -9,7 +9,7 @@ import urllib2
 
 #momento = arrow.now('local') #just a way to test speed
 
-#app settings
+#app settings, fill with your app credentials
 app_key = ''
 app_secret = ''
 access_token = '' 
