@@ -50,35 +50,30 @@ def get_urls(magic_url):
     #print track
     return track
 
-#main loop to get 3 pages of urls
-for i in xrange(3):
-    if i == 0:
-        tweets = search(q='#nowplaying spotify')
+id_number = 0 #id for searchs in twitter
+contador = 0 #used in the while to count tracks
 
-        for tweet in tweets['statuses']:
-            magic_url = tweet['entities']['urls'][0]['expanded_url'].encode('utf-8')
-
-            try:
-                print "http://open.spotify.com/track/" + get_urls(magic_url)
-
-            except:
-                error = "Probably more than 1 url"
-
-        id_number = tweets['statuses'][-1]['id']
-
+#Is possible to get many bad urls or tweets where this code is not able to catch urls
+#so this while does that at least you get 30 songs but for example you get 29 the while
+#will get the next 15 tweets and extract the urls so you watchng to 44 
+while contador == 0 or contador <= 30:
+    if id_number != 0:
+        tweets = search(q='#nowplaying spotify', max_id= id_number) #make the search looking for older tweets
     else:
-        tweets = search(q='#nowplaying spotify', max_id = id_number)
-        for tweet in tweets['statuses']:
+        tweets = search(q='#nowplaying spotify')#initial search
 
-            magic_url = tweet['entities']['urls'][0]['expanded_url'].encode('utf-8')
+    for tweet in tweets['statuses']:
+        magic_url = tweet['entities']['urls'][0]['expanded_url'].encode('utf-8')#the tweet url
+        try:
+            print "http://open.spotify.com/track/" + get_urls(magic_url)#get the spotify url
+            contador += 1
 
-            try:
-                print "http://open.spotify.com/track/" + get_urls(magic_url)
-            except:
-                error = "Probably more than 1 url"
+        except:
+            error = "Probably more than 1 url"
 
-        id_number = tweets['statuses'][-1]['id']
+    id_number = tweets['statuses'][-1]['id'] # return the las id
 
 #new_momento = arrow.now('local')#check again the time
 
-#print new_momento - momento #return diference
+#time = new_momento - momento
+print "Printed " + str(contador) + " tracks in " #+ str(time)
