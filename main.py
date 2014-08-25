@@ -3,7 +3,6 @@
 #to use timer uncomment arrow import and timer marks
 
 from twython import Twython
-import json
 import urllib2
 #import arrow
 
