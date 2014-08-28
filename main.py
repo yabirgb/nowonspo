@@ -52,6 +52,7 @@ def get_urls(magic_url):
 
 id_number = 0 #id for searchs in twitter
 contador = 0 #used in the while to count tracks
+lista_usuarios = []
 
 #Is possible to get many bad urls or tweets where this code is not able to catch urls
 #so this while does that at least you get 30 songs but for example you get 29 the while
@@ -65,8 +66,10 @@ while contador == 0 or contador <= 30:
     for tweet in tweets['statuses']:
         magic_url = tweet['entities']['urls'][0]['expanded_url'].encode('utf-8')#the tweet url
         try:
-            print "http://open.spotify.com/track/" + get_urls(magic_url)#get the spotify url
-            contador += 1
+            if str(tweet['user']['screen_name']) not in lista_usuarios:
+                lista_usuarios.append(str(tweet['user']['screen_name']))	
+            	print "http://open.spotify.com/track/" + get_urls(magic_url)#get the spotify url
+            	contador += 1
 
         except:
             error = "Probably more than 1 url"
