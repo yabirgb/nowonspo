@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-#to use timer uncomment arrow import and timer marks
-
 from twython import Twython
 import urllib2
-#import arrow
 
-#momento = arrow.now('local') #just a way to test speed
+from datetime import datetime
+
+tstart = datetime.now()
+
+
 
 #app settings, fill with your app credentials
 app_key = ''
@@ -15,7 +16,6 @@ access_token = ''
 access_token_secret = '' 
 
 twitter = Twython(app_key, app_secret, access_token, access_token_secret)
-#tweets = twitter.search(q='#nowplaying spotify')
 
 #define the tweets search
 search = twitter.search
@@ -54,29 +54,28 @@ id_number = 0 #id for searchs in twitter
 contador = 0 #used in the while to count tracks
 lista_usuarios = []
 
-#Is possible to get many bad urls or tweets where this code is not able to catch urls
-#so this while does that at least you get 30 songs but for example you get 29 the while
-#will get the next 15 tweets and extract the urls so you watchng to 44 
-while contador == 0 or contador <= 30:
+while contador == 0 or contador < 30:
     if id_number != 0:
         tweets = search(q='#nowplaying spotify', max_id= id_number) #make the search looking for older tweets
     else:
         tweets = search(q='#nowplaying spotify')#initial search
 
     for tweet in tweets['statuses']:
-        magic_url = tweet['entities']['urls'][0]['expanded_url'].encode('utf-8')#the tweet url
-        try:
+        #by using this filter we prevent from getting albums but it can fail
+        if "by" or "de" in tweet["statuses"]["text"].split(" "): 
+            magic_url = tweet['entities']['urls'][0]['expanded_url'].encode('utf-8')#the tweet url
             if str(tweet['user']['screen_name']) not in lista_usuarios:
                 lista_usuarios.append(str(tweet['user']['screen_name']))	
-            	print "http://open.spotify.com/track/" + get_urls(magic_url)#get the spotify url
-            	contador += 1
+                print "http://open.spotify.com/track/" + get_urls(magic_url) #get the spotify url
+                print str(tweet["text"].encode('utf-8'))+ "\n"
 
-        except:
-            error = "Probably more than 1 url"
+                contador += 1
 
     id_number = tweets['statuses'][-1]['id'] # return the las id
 
-#new_momento = arrow.now('local')#check again the time
+tfinish = datetime.now()
 
-#time = new_momento - momento
-print "Printed " + str(contador) + " tracks in " #+ str(time)
+result = tfinish - tstart
+result = result.seconds
+
+print "Printed " + str(contador) + " tracks in " + str(result) + "seconds"
